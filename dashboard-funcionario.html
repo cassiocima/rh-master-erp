@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Colaborador - RH Master</title>
+    <script src="https://cdn.tailwindcss.com"></script> </head>
+<body class="bg-gray-100 font-sans">
+
+    <nav class="bg-blue-900 text-white p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">RH MASTER ERP</h1>
+            <div class="flex items-center gap-4">
+                <span id="user-name" class="hidden md:inline">Carregando...</span>
+                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
+                    👤
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                <p class="text-sm text-gray-500 uppercase font-bold">Último Salário Líquido</p>
+                <h2 id="net-salary" class="text-3xl font-bold text-gray-800">R$ 0,00</h2>
+                <p class="text-xs text-gray-400 mt-2">Referente a Março/2026</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-yellow-500">
+                <p class="text-sm text-gray-500 uppercase font-bold">Saldo de Férias</p>
+                <h2 id="vacation-days" class="text-3xl font-bold text-gray-800">30 Dias</h2>
+                <p id="vacation-status" class="text-xs text-yellow-600 mt-2 font-semibold italic">Período Concessivo em aberto</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                <p class="text-sm text-gray-500 uppercase font-bold">Benefícios Ativos</p>
+                <h2 id="benefits-count" class="text-3xl font-bold text-gray-800">0</h2>
+                <p class="text-xs text-gray-400 mt-2">Plano de Saúde, VT e Refeição</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-lg font-bold mb-4 border-bottom pb-2">Meus Holerites</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-gray-400 text-sm uppercase">
+                                <th class="py-2">Mês/Ano</th>
+                                <th class="py-2">Tipo</th>
+                                <th class="py-2 text-right">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payroll-history" class="text-gray-700">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-lg font-bold mb-4">Meus Dados</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-500">Matrícula</span>
+                        <span id="emp-id" class="font-mono font-bold">#0000</span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-500">Data de Admissão</span>
+                        <span id="hire-date">--/--/----</span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-500">Vínculo</span>
+                        <span id="employment-type" class="uppercase text-sm bg-blue-100 text-blue-800 px-2 rounded">CLT</span>
+                    </div>
+                </div>
+                <button class="w-full mt-6 bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition">
+                    Solicitar Atualização Cadastral
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulação de carregamento de dados (Futuramente virá da API /api/employees/:id)
+        async function loadDashboard() {
+            // Pegamos um funcionário de teste para a prévia
+            const response = await fetch('http://localhost:3001/api/employees');
+            const employees = await response.json();
+            const me = employees[0]; // Pega o primeiro para exemplo
+
+            if (me) {
+                document.getElementById('user-name').innerText = `Olá, ${me.name.split(' ')[0]}`;
+                document.getElementById('emp-id').innerText = me.id.substring(0, 8);
+                document.getElementById('hire-date').innerText = me.hire_date;
+                document.getElementById('employment-type').innerText = me.employment_type;
+                
+                // Exemplo de preenchimento da tabela de holerites
+                const history = document.getElementById('payroll-history');
+                history.innerHTML = `
+                    <tr class="border-b">
+                        <td class="py-3 font-semibold">03/2026</td>
+                        <td class="py-3 text-sm">Folha Mensal</td>
+                        <td class="py-3 text-right">
+                            <button class="text-blue-600 hover:underline">Visualizar PDF</button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        loadDashboard();
+    </script>
+</body>
+</html>
